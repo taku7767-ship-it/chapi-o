@@ -89,12 +89,25 @@ function show(id){
  document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('active',n.dataset.target===id));
 }
 function toast(t){const x=document.getElementById('toast');x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',1800)}
-function sendMsg(){
+async function sendMsg(){
  const i=document.getElementById('chatInput'); const v=i.value.trim(); if(!v)return;
- const m=document.getElementById('messages'); m.insertAdjacentHTML('beforeend',`<div class="bubble me">${v.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</div>`);
- i.value=''; setTimeout(()=>m.insertAdjacentHTML('beforeend',`<div class="bubble ai">うんうん！🐹✨ ちゃぴおに任せて！<br>もっと詳しく教えてくれたら、一緒に考えるよ。</div>`),450);
+ const m=document.getElementById('messages');
+ const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+ m.insertAdjacentHTML('beforeend',`<div class="bubble me">${esc(v)}</div>`);
+ i.value='';
+ const loading=document.createElement('div'); loading.className='bubble ai'; loading.textContent='考え中だよ…🐹💭'; m.appendChild(loading);
+ m.parentElement.scrollTop=m.parentElement.scrollHeight;
+ try{
+   const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:v})});
+   const data=await res.json();
+   loading.textContent=res.ok ? (data.reply || 'ごめんね、うまく返事できなかったよ。') : (data.error || 'ちゃぴおの通信でエラーが起きたよ。');
+ }catch(e){
+   loading.textContent='通信できなかったよ。もう一度試してみてね🐹';
+ }
+ m.parentElement.scrollTop=m.parentElement.scrollHeight;
 }
 function generate(){toast('ちゃぴおが画像を作っています…✨');setTimeout(()=>toast('できたよ！🐹✨'),1200)}
+document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
 </script>
 </body>
 </html>
