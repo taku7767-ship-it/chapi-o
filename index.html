@@ -90,21 +90,60 @@ function show(id){
 }
 function toast(t){const x=document.getElementById('toast');x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',1800)}
 async function sendMsg(){
- const i=document.getElementById('chatInput'); const v=i.value.trim(); if(!v)return;
- const m=document.getElementById('messages');
- const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
- m.insertAdjacentHTML('beforeend',`<div class="bubble me">${esc(v)}</div>`);
- i.value='';
- const loading=document.createElement('div'); loading.className='bubble ai'; loading.textContent='考え中だよ…🐹💭'; m.appendChild(loading);
- m.parentElement.scrollTop=m.parentElement.scrollHeight;
- try{
-   const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:v})});
-   const data=await res.json();
-   loading.textContent=res.ok ? (data.reply || 'ごめんね、うまく返事できなかったよ。') : (data.error || 'ちゃぴおの通信でエラーが起きたよ。');
- }catch(e){
-   loading.textContent='通信できなかったよ。もう一度試してみてね🐹';
- }
- m.parentElement.scrollTop=m.parentElement.scrollHeight;
+  const i=document.getElementById('chatInput');
+  const v=i.value.trim();
+  if(!v)return;
+
+  const m=document.getElementById('messages');
+  const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+  m.insertAdjacentHTML('beforeend',`<div class="bubble me">${esc(v)}</div>`);
+  i.value='';
+
+  const loading=document.createElement('div');
+  loading.className='bubble ai';
+  loading.textContent='ちゃぴおが考えてるよ🐹💭';
+  m.appendChild(loading);
+  m.parentElement.scrollTop=m.parentElement.scrollHeight;
+
+  let history=JSON.parse(localStorage.getItem('chapi_history')||'[]');
+
+  history.push({
+    role:'user',
+    content:v
+  });
+
+  try{
+    const conversation=history
+      .map(x=>`${x.role==='user'?'ユーザー':'ちゃぴお'}: ${x.content}`)
+      .join('\n');
+
+    const res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:conversation})
+    });
+
+    const data=await res.json();
+
+    if(res.ok){
+      const reply=data.reply||'ごめんね、うまく返事できなかったよ🐹';
+      loading.textContent=reply;
+
+      history.push({
+        role:'assistant',
+        content:reply
+      });
+
+      localStorage.setItem('chapi_history',JSON.stringify(history));
+    }else{
+      loading.textContent=data.error||'ごめんね、うまく返事できなかったよ🐹';
+    }
+  }catch(e){
+    loading.textContent='通信できなかったよ。もう一度試してみてね🐹';
+  }
+
+  m.parentElement.scrollTop=m.parentElement.scrollHeight;
 }
 function generate(){toast('ちゃぴおが画像を作っています…✨');setTimeout(()=>toast('できたよ！🐹✨'),1200)}
 document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
