@@ -190,7 +190,92 @@ async function sendMsg(){
 
   m.parentElement.scrollTop=m.parentElement.scrollHeight;
 }
-function generate(){toast('ちゃぴおが画像を作っています…✨');setTimeout(()=>toast('できたよ！🐹✨'),1200)}
+async function generateImage(){
+  const prompt = document.getElementById("imagePrompt").value.trim();
+  const result = document.getElementById("imageResult");
+
+  if(!prompt){
+    toast("どんな画像にするか入力してね🐹");
+    return;
+  }
+
+  result.innerHTML = "🐹 ちゃぴおが画像を作っています…✨";
+
+  try{
+    const response = await fetch("/api/image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        prompt: prompt
+      })
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(data.error || "画像生成に失敗しました");
+    }
+
+    result.innerHTML = `
+      <img
+        src="data:image/png;base64,${data.image}"
+        style="width:100%;border-radius:16px;margin-top:10px;"
+      >
+    `;
+
+  }catch(error){
+    result.innerHTML = "❌ " + error.message;
+  }
+}
+
+
+async function editImage(){
+  const fileInput = document.getElementById("editImage");
+  const prompt = document.getElementById("editPrompt").value.trim();
+  const result = document.getElementById("imageResult");
+
+  if(!fileInput.files[0]){
+    toast("編集する写真を選んでね🐹");
+    return;
+  }
+
+  if(!prompt){
+    toast("どんなふうに編集するか入力してね🐹");
+    return;
+  }
+
+  result.innerHTML = "🐹 ちゃぴおが写真を編集しています…✨";
+
+  try{
+    const formData = new FormData();
+
+    formData.append("image", fileInput.files[0]);
+    formData.append("prompt", prompt);
+
+    const response = await fetch("/api/image", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(data.error || "画像編集に失敗しました");
+    }
+
+    result.innerHTML = `
+      <img
+        src="data:image/png;base64,${data.image}"
+        style="width:100%;border-radius:16px;margin-top:10px;"
+      >
+    `;
+
+  }catch(error){
+    result.innerHTML = "❌ " + error.message;
+  }
+}
 document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
 </script>
 </body>
