@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ちゃぴお</title>
+<style>
+:root{--bg:#06172d;--card:#102846;--card2:#163557;--blue:#2587ff;--text:#f4f8ff;--muted:#9eb2cd;--line:#234466}
+*{box-sizing:border-box}body{margin:0;background:#020b17;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}
+.phone{width:min(430px,100vw);height:100vh;min-height:700px;margin:auto;background:linear-gradient(180deg,#06182f,#041124);position:relative;overflow:hidden}
+.screen{height:100%;overflow:auto;padding-bottom:88px}.hidden{display:none!important}
+.top{height:92px;padding:42px 18px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(6,24,47,.94);backdrop-filter:blur(14px);z-index:4}
+.logo{font-size:25px;font-weight:800}.paw{font-size:20px}.status{font-size:12px;color:#45e39a}.avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #6fb2ff;background:#193b61}
+.hero{margin:16px;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,#17375d,#0b203d);position:relative;min-height:300px}
+.hero img{width:100%;height:300px;object-fit:cover;opacity:.9}.heroText{position:absolute;left:20px;bottom:18px;text-shadow:0 2px 12px #000}.heroText h1{font-size:28px;margin:0 0 6px}.heroText p{margin:0;color:#d7e6fa}
+.input{margin:14px 16px;padding:15px 16px;background:#142e4e;border:1px solid #2c527c;border-radius:20px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px}.tile{padding:18px 12px;background:linear-gradient(145deg,#102b4a,#0c213b);border:1px solid #224568;border-radius:18px;text-align:center;cursor:pointer}.tile .ico{font-size:28px}.tile b{display:block;margin-top:8px}.tile small{color:var(--muted)}
+.section{padding:18px 16px 8px;font-size:18px;font-weight:800}.list{margin:0 16px;background:#0d2541;border-radius:18px;overflow:hidden}.row{padding:15px;border-bottom:1px solid #1d3b5d}.row:last-child{border:0}
+.chat{padding:18px 14px}.bubble{max-width:82%;padding:13px 15px;border-radius:18px;margin:10px 0;line-height:1.65}.ai{background:#122d4d;margin-right:auto}.me{background:#1875ee;margin-left:auto}.composer{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);width:min(398px,calc(100vw - 24px));display:flex;gap:8px;padding:8px;background:#0c2440;border:1px solid #315579;border-radius:24px;z-index:5}.composer input{flex:1;background:transparent;border:0;color:white;outline:0;padding:0 8px}.send,.primary{border:0;background:var(--blue);color:white;border-radius:18px;padding:11px 16px;font-weight:700;cursor:pointer}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100vw);height:68px;background:rgba(4,17,36,.97);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:6}.nav{background:none;border:0;color:#7f98b8;font-size:11px}.nav.active{color:#4ea1ff}.nav span{display:block;font-size:23px;margin-bottom:2px}
+.profileCard{margin:16px;padding:20px;background:#0d2948;border:1px solid #27517b;border-radius:24px;text-align:center}.bigAvatar{width:150px;height:150px;border-radius:50%;object-fit:cover;border:3px solid #4da0ff}.setting{margin:10px 16px;padding:16px;background:#102b49;border-radius:16px;display:flex;justify-content:space-between;align-items:center}.setting button{background:#1b4772;border:0;color:#fff;border-radius:14px;padding:8px 12px}
+.voice{padding:28px 16px;text-align:center}.voice .ham{width:250px;height:250px;border-radius:50%;object-fit:cover;border:5px solid #2587ff;box-shadow:0 0 35px #1673ff55}.mic{width:100px;height:100px;border-radius:50%;border:0;background:#2387ff;color:white;font-size:40px;margin:24px auto;display:block}
+.result{margin:16px;padding:14px;background:#0e2947;border-radius:20px}.result img{width:100%;border-radius:16px}
+button{font:inherit}.back{background:none;border:0;color:white;font-size:24px}
+.toast{position:fixed;top:94px;left:50%;transform:translateX(-50%);background:#183b61;padding:11px 16px;border-radius:16px;z-index:20;display:none}
+</style>
+</head>
+<body>
+<div class="phone">
+<div id="toast" class="toast">ちゃぴおだよ🐹</div>
+
+<section id="home" class="screen">
+  <div class="top"><img class="avatar" src="chapi_hamster.png"><div><div class="logo">ちゃぴお 🐾</div><div class="status">● オンライン</div></div></div>
+  <div class="hero"><img src="chapi_hamster.png"><div class="heroText"><h1>たくみ、おかえり！</h1><p>今日もいろいろ話そうね 😊</p></div></div>
+  <div class="input" onclick="show('chat')">💬 ちゃぴおにメッセージを送る　➜</div>
+  <div class="grid">
+    <div class="tile" onclick="show('chat')"><div class="ico">💬</div><b>チャット</b><small>なんでも相談してね</small></div>
+    <div class="tile" onclick="show('image')"><div class="ico">🖼️</div><b>画像生成・編集</b><small>写真の加工もできるよ</small></div>
+    <div class="tile" onclick="show('voice')"><div class="ico">🎙️</div><b>音声で話す</b><small>声で会話しよう</small></div>
+    <div class="tile" onclick="show('profile')"><div class="ico">⚙️</div><b>設定</b><small>自分好みにカスタマイズ</small></div>
+  </div>
+  <div class="section">最近のチャット</div>
+  <div class="list"><div class="row">☕ カフェの写真を作ってみたい</div><div class="row">💡 ちゃぴおに相談</div><div class="row">🐹 ちゃぴおって呼んでみた！</div></div>
+</section>
+
+<section id="chat" class="screen hidden">
+  <div class="top"><button class="back" onclick="show('home')">‹</button><img class="avatar" src="chapi_hamster.png"><div><div class="logo">ちゃぴお 🐾</div><div class="status">● オンライン</div></div></div>
+  <div class="chat" id="messages">
+    <div class="bubble ai">たくみさん！また話してくれてうれしいです😊<br>今日はどんなことを話したいですか？</div>
+    <div class="bubble me">ちゃぴお！今日は何ができるの？</div>
+    <div class="bubble ai">チャット、画像生成、音声会話、アイデア出しなど、いろいろできるよ🐹✨</div>
+  </div>
+  <div class="composer"><input id="chatInput" placeholder="メッセージを入力…"><button class="send" onclick="sendMsg()">➤</button></div>
+</section>
+
+<section id="image" class="screen hidden">
+  <div class="top"><button class="back" onclick="show('home')">‹</button><div><div class="logo">画像生成・編集</div><div class="status">ちゃぴおにお願いしよう</div></div></div>
+  <div class="section">好きなイメージをカタチにしよう！</div>
+  <div class="grid"><div class="tile" onclick="generate()"><div class="ico">✨</div><b>画像を生成する</b><small>言葉から作成</small></div><div class="tile" onclick="toast('写真を選ぶ機能は次の開発で追加するよ📷')"><div class="ico">📷</div><b>写真を編集する</b><small>アップロード</small></div></div>
+  <div class="result"><div class="section" style="padding:4px 0 12px">サンプル結果</div><img src="chapi_hamster.png"><p>「ちゃぴおとカフェで過ごす」イメージ</p><button class="primary" onclick="toast('保存しました！')">保存</button></div>
+</section>
+
+<section id="voice" class="screen hidden">
+  <div class="top"><button class="back" onclick="show('home')">‹</button><div><div class="logo">ちゃぴお 🐾</div><div class="status">● 音声会話</div></div></div>
+  <div class="voice"><img class="ham" src="chapi_hamster.png"><h2>ちゃぴおが聞いています…</h2><p style="color:var(--muted)">話したいことを自由に話してね</p><button class="mic" onclick="toast('ちゃぴおが聞いてるよ！🎙️')">🎙️</button><p>タップして話す</p></div>
+</section>
+
+<section id="profile" class="screen hidden">
+  <div class="top"><button class="back" onclick="show('home')">‹</button><div class="logo">ちゃぴおプロフィール</div></div>
+  <div class="profileCard"><img class="bigAvatar" src="chapi_hamster.png"><h2>ちゃぴお 🐾</h2><p>たくみ専用AIパートナー</p><p style="color:var(--muted)">優しい・好奇心旺盛・マイペース</p></div>
+  <div class="setting">🐹 見た目・表情 <button onclick="toast('表情カスタマイズを開きます')">開く</button></div>
+  <div class="setting">🔊 声の設定 <button onclick="toast('声の設定を開きます')">開く</button></div>
+  <div class="setting">💬 話し方の設定 <button onclick="toast('話し方を設定できます')">開く</button></div>
+  <div class="setting">❤️ 好きなもの <button onclick="toast('好きなものを編集できます')">編集</button></div>
+  <div class="setting">ℹ️ ちゃぴおについて <button onclick="toast('これからもよろしくね🐾')">見る</button></div>
+</section>
+
+<div class="bottom">
+  <button class="nav active" data-target="home" onclick="show('home')"><span>⌂</span>ホーム</button>
+  <button class="nav" data-target="chat" onclick="show('chat')"><span>💬</span>チャット</button>
+  <button class="nav" data-target="image" onclick="show('image')"><span>▧</span>画像</button>
+  <button class="nav" data-target="profile" onclick="show('profile')"><span>♙</span>プロフィール</button>
+</div>
+</div>
+<script>
+function show(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+ document.getElementById(id).classList.remove('hidden');
+ document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('active',n.dataset.target===id));
+}
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',1800)}
+function sendMsg(){
+ const i=document.getElementById('chatInput'); const v=i.value.trim(); if(!v)return;
+ const m=document.getElementById('messages'); m.insertAdjacentHTML('beforeend',`<div class="bubble me">${v.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</div>`);
+ i.value=''; setTimeout(()=>m.insertAdjacentHTML('beforeend',`<div class="bubble ai">うんうん！🐹✨ ちゃぴおに任せて！<br>もっと詳しく教えてくれたら、一緒に考えるよ。</div>`),450);
+}
+function generate(){toast('ちゃぴおが画像を作っています…✨');setTimeout(()=>toast('できたよ！🐹✨'),1200)}
+</script>
+</body>
+</html>
