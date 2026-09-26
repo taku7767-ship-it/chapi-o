@@ -54,10 +54,55 @@ button{font:inherit}.back{background:none;border:0;color:white;font-size:24px}
 </section>
 
 <section id="image" class="screen hidden">
-  <div class="top"><button class="back" onclick="show('home')">‹</button><div><div class="logo">画像生成・編集</div><div class="status">ちゃぴおにお願いしよう</div></div></div>
-  <div class="section">好きなイメージをカタチにしよう！</div>
-  <div class="grid"><div class="tile" onclick="generate()"><div class="ico">✨</div><b>画像を生成する</b><small>言葉から作成</small></div><div class="tile" onclick="toast('写真を選ぶ機能は次の開発で追加するよ📷')"><div class="ico">📷</div><b>写真を編集する</b><small>アップロード</small></div></div>
-  <div class="result"><div class="section" style="padding:4px 0 12px">サンプル結果</div><img src="chapi_hamster.png"><p>「ちゃぴおとカフェで過ごす」イメージ</p><button class="primary" onclick="toast('保存しました！')">保存</button></div>
+  <div class="top">
+    <button class="back" onclick="show('home')">←</button>
+    <div>
+      <div class="logo">画像生成・編集</div>
+      <div class="status">🐹 ちゃぴおにお願い</div>
+    </div>
+  </div>
+
+  <div class="section">🖼️ AIで画像を作ろう！</div>
+
+  <div class="tile">
+    <div class="section">✨ 新しい画像を作る</div>
+    <input
+      id="imagePrompt"
+      type="text"
+      placeholder="例：カフェで抹茶ラテを飲むかわいいハムスター"
+      style="width:100%;box-sizing:border-box;padding:14px;border-radius:12px;border:1px solid #ddd;margin-bottom:10px;"
+    >
+    <button onclick="generateImage()" style="width:100%;padding:14px;border:0;border-radius:12px;cursor:pointer;">
+      🐹 画像を生成する
+    </button>
+  </div>
+
+  <div class="tile">
+    <div class="section">✏️ 写真をAIで編集する</div>
+
+    <input
+      id="editImage"
+      type="file"
+      accept="image/*"
+      style="width:100%;margin-bottom:10px;"
+    >
+
+    <input
+      id="editPrompt"
+      type="text"
+      placeholder="例：髪を黒くしてください"
+      style="width:100%;box-sizing:border-box;padding:14px;border-radius:12px;border:1px solid #ddd;margin-bottom:10px;"
+    >
+
+    <button onclick="editImage()" style="width:100%;padding:14px;border:0;border-radius:12px;cursor:pointer;">
+      ✨ 写真を編集する
+    </button>
+  </div>
+
+  <div class="result">
+    <div class="section">生成・編集結果</div>
+    <div id="imageResult"></div>
+  </div>
 </section>
 
 <section id="voice" class="screen hidden">
